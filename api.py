@@ -1,32 +1,42 @@
-from flask import Flask 
+from flask import Flask, request, jsonify
+import joblib
+import numpy as np
+
+
 app = Flask(__name__)
+# Load the machine learning model
+model = joblib.load('model.pkl')
 
-@app.route('/api', methods = ['GET'])
-def returnascii():
-    d = {}
-    inputchr = str(request.args['query'])
-    answer = str(ord(inputchr))
-    d['output'] = answer
-    return d
+# @app.route('/predict', methods = ['GET'])
+# def go_home():
+#     return "Hello"
 
-@app.route('/predict', methods=['POST'])
+#Define a route for the API
+@app.route('/predict', methods=['POST','GET'])
 def predict():
-    lr = joblib.load("model.pkl")
-    if lr:
-        try:
-            json = request.get_json()  
-            model_columns = joblib.load("model_cols.pkl")
-            temp=list(json[0].values())
-            vals=np.array(temp)
-            prediction = lr.predict(temp)
-            print("here:",prediction)        
-            return jsonify({'prediction': str(prediction[0])})
-        except:        
-            return jsonify({'trace': traceback.format_exc()})
-    else:
-        return ('No model here to use')
+    # Get the data from the request
+    data = request.get_json()
+    #data = 
+    # Convert the data to a numpy array
+    data_array = model.predict([np.array(list(data.values()))])
+
+    #data_array = np.array([data['N'], data['P'], data['K'], data['temperature'], data['humidity'], data['ph'], data['rainfall']])
+
+    # Reshape the data to match the model's input shape
+    data_reshaped = data_array.reshape(1, -1)
+
+    # Make a prediction with the model
+    prediction = model.predict(data_reshaped)
+
+    # Get the crop name from the prediction
+    #crop_name = ['rice', 'wheat', 'maize', 'barley', 'oats'][prediction[0]]
+    crop_name = prediction[0]
+    # Return the prediction as JSON
+    return jsonify({'crop_recommendation': crop_name})
 
 
 
-if __name__ =="__main__":
-    app.run()
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -12,7 +12,7 @@ model = joblib.load('model.pkl')
 #     return "Hello"
 
 #Define a route for the API
-@app.route('/predict', methods=['POST','GET'])
+@app.route('/', methods=['POST','GET'])
 def predict():
     # Get the data from the request
     data = request.get_json()

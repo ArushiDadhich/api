@@ -15,13 +15,15 @@ model = joblib.load('model.pkl')
 @app.route('/')
 def check():
     return jsonify({"Choo Choo": "Welcome to your Flask app 🚅"})
-@app.route('/predict', methods=['POST','GET'])
+@app.route('/predict', methods=['POST'])
 def predict():
     # Get the data from the request
-    data = request.get_json()
+    result = request.form
+      
+    stuff = result.getlist("key")
     #data = 
     # Convert the data to a numpy array
-    data_array = model.predict([np.array(list(data.values()))])
+    data_array = model.predict([np.array(stuff)])
 
     #data_array = np.array([data['N'], data['P'], data['K'], data['temperature'], data['humidity'], data['ph'], data['rainfall']])
 

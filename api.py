@@ -12,9 +12,9 @@ model = joblib.load('model.pkl')
 #     return "Hello"
 
 #Define a route for the API
-@app.route('/', methods=['POST','GET'])
+@app.route('/')
 def check():
-    print('I am Alive')
+    return jsonify({"Choo Choo": "Welcome to your Flask app 🚅"})
 @app.route('/predict', methods=['POST','GET'])
 def predict():
     # Get the data from the request

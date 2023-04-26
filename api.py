@@ -13,6 +13,9 @@ model = joblib.load('model.pkl')
 
 #Define a route for the API
 @app.route('/', methods=['POST','GET'])
+def check():
+    print('I am Alive')
+@app.route('/predict', methods=['POST','GET'])
 def predict():
     # Get the data from the request
     data = request.get_json()
